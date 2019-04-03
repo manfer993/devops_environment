@@ -17,7 +17,7 @@ services:
       - network_devops
 
   gitlab:
-    image: gitlab/gitlab-ce
+    image: gitlab/gitlab-ce:latest
     container_name: gitlab
     volumes:
       - ./vol_gitlab/config:/etc/gitlab
@@ -27,7 +27,7 @@ services:
       - "10080:80"
       - "10443:443"
       - "10022:22"
-    hostname: gitlab.devops 
+    hostname: gitlab.devops.io 
     networks:
       - network_devops
 
@@ -36,36 +36,14 @@ services:
     container_name: sonarqube
     expose:
       - 9000
+      - 9092
     ports:
       - "9100:9000"
+      - "9092:9092"
     networks:
-      - sonarnet
       - network_devops
-    environment:
-      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
-      - SONARQUBE_JDBC_USERNAME=sonar
-      - SONARQUBE_JDBC_PASSWORD=sonar
-    volumes:
-      - ./vol_sonarqube/conf:/opt/sonarqube/conf
-      - ./vol_sonarqube/data:/opt/sonarqube/data
-      - ./vol_sonarqube/extensions:/opt/sonarqube/extensions
-      - ./vol_sonarqube/bundled-plugins:/opt/sonarqube/lib/bundled-plugins
-
-  db:
-    image: postgres
-    container_name: postgresdb_sonar
-    networks:
-      - sonarnet
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-    volumes:
-      - ./vol_postgresql:/var/lib/postgresql
-      - ./vol_postgresql/data:/var/lib/postgresql/data
 
 networks:
   network_devops:
     external:
       name: "network_devops"
-  sonarnet:
-    driver: bridge
