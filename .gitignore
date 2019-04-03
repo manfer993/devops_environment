@@ -1,1 +1,5 @@
 # http://help.github.com/ignore-files/ for more about ignoring files.
+/vol_jenkins/*
+/vol_gitlab/*
+/vol_sonarqube/*
+/vol_postgresql/*
