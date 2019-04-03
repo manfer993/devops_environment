@@ -1,0 +1,71 @@
+version: '3'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    user: jenkins
+    hostname: jenkins.devops
+    volumes:
+      - ./vol_jenkins:/var/jenkins_home
+    environment:
+      JENKINS_HOST_HOME: "./vol_jenkins"
+    ports:
+      - "4080:8080"
+      - "51000:50000"
+      - "5100:5000"
+    networks:
+      - network_devops
+
+  gitlab:
+    image: gitlab/gitlab-ce
+    container_name: gitlab
+    volumes:
+      - ./vol_gitlab/config:/etc/gitlab
+      - ./vol_gitlab/logs:/var/log/gitlab
+      - ./vol_gitlab/data:/var/opt/gitlab
+    ports:
+      - "10080:80"
+      - "10443:443"
+      - "10022:22"
+    hostname: gitlab.devops 
+    networks:
+      - network_devops
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    expose:
+      - 9000
+    ports:
+      - "9100:9000"
+    networks:
+      - sonarnet
+      - network_devops
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+    volumes:
+      - ./vol_sonarqube/conf:/opt/sonarqube/conf
+      - ./vol_sonarqube/data:/opt/sonarqube/data
+      - ./vol_sonarqube/extensions:/opt/sonarqube/extensions
+      - ./vol_sonarqube/bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+
+  db:
+    image: postgres
+    container_name: postgresdb_sonar
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - ./vol_postgresql:/var/lib/postgresql
+      - ./vol_postgresql/data:/var/lib/postgresql/data
+
+networks:
+  network_devops:
+    external:
+      name: "network_devops"
+  sonarnet:
+    driver: bridge
