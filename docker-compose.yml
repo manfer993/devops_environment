@@ -18,15 +18,16 @@ services:
 
   gitlab:
     image: gitlab/gitlab-ce:latest
+    restart: always 
     container_name: gitlab
     volumes:
       - ./vol_gitlab/config:/etc/gitlab
       - ./vol_gitlab/logs:/var/log/gitlab
       - ./vol_gitlab/data:/var/opt/gitlab
     ports:
-      - "10080:80"
+      - "1080:80"
       - "10443:443"
-      - "10022:22"
+      - "1022:22"
     hostname: gitlab.devops.io 
     networks:
       - network_devops
