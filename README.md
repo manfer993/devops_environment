@@ -20,7 +20,6 @@ you need to install docker and docker-compose
 | http://localhost:4080/  | Jenkins     |
 | http://localhost:1080/  | GitLab      |
 | http://localhost:9100/  | Sonarqube   |
-| http://localhost:       | Postgres    |
 
 
  
