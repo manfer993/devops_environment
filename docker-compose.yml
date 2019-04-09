@@ -1,34 +1,19 @@
 version: '3'
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build: .
     container_name: jenkins
     user: jenkins
     hostname: jenkins.devops
     volumes:
       - ./vol_jenkins:/var/jenkins_home
+      - ./vol_docker:/var/run/docker.sock
     environment:
       JENKINS_HOST_HOME: "./vol_jenkins"
     ports:
       - "4080:8080"
       - "51000:50000"
       - "5100:5000"
-    networks:
-      - network_devops
-
-  gitlab:
-    image: gitlab/gitlab-ce:latest
-    restart: always 
-    container_name: gitlab
-    volumes:
-      - ./vol_gitlab/config:/etc/gitlab
-      - ./vol_gitlab/logs:/var/log/gitlab
-      - ./vol_gitlab/data:/var/opt/gitlab
-    ports:
-      - "1080:80"
-      - "10443:443"
-      - "1022:22"
-    hostname: gitlab.devops.io 
     networks:
       - network_devops
 
@@ -41,6 +26,21 @@ services:
     ports:
       - "9100:9000"
       - "9092:9092"
+    networks:
+      - network_devops
+
+  gitlab:
+    image: gitlab/gitlab-ce:11.9.1-ce.0
+    container_name: gitlab
+    volumes:
+      - ./vol_gitlab/config:/etc/gitlab
+      - ./vol_gitlab/logs:/var/log/gitlab
+      - ./vol_gitlab/data:/var/opt/gitlab
+    ports:
+      - "1080:80"
+      - "10443:443"
+      - "1022:22"
+    hostname: gitlab.devops.io 
     networks:
       - network_devops
 
