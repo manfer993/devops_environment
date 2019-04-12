@@ -1,5 +1,21 @@
 version: '3'
 services:
+
+  gitlab:
+    image: gitlab/gitlab-ce:11.9.1-ce.0
+    container_name: gitlab
+    volumes:
+      - ./vol_gitlab/config:/etc/gitlab
+      - ./vol_gitlab/logs:/var/log/gitlab
+      - ./vol_gitlab/data:/var/opt/gitlab
+    ports:
+      - "1080:80"
+      - "10443:443"
+      - "1022:22"
+    hostname: gitlab.devops.io 
+    networks:
+      - network_devops
+      
   jenkins:
     build: .
     container_name: jenkins
